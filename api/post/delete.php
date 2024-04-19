@@ -5,7 +5,7 @@ declare(strict_types=1);
 // Headers
 header("Access-Control-Allow-Origin: *"); // api can be accessed by anyone
 header("Content-Type: application/json");
-header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Methods: DELETE");
 header(
     "Access-Control-Allow-Headers: Access-Control-Allow-Headers,Content-Type,Access-Control-Allow-Methods, Authorization, X-Requested-With"
 );
@@ -23,18 +23,16 @@ $post = new Post($db);
 // Get raw posted data
 $data = json_decode(file_get_contents("php://input"));
 
-$post->title = $data->title;
-$post->body = $data->body;
-$post->author = $data->author;
-$post->category_id = $data->category_id;
+// Set ID to update
+$post->id = $data->id;
 
-// Create post
-if ($post->create()) {
+// Update post
+if ($post->delete()) {
     echo json_encode(
-        ["message" => "Post Created"]
+        ["message" => "Post Deleted"]
     );
 } else {
     echo json_encode(
-        ["message" => "Post Not Created"]
+        ["message" => "Post Not Deleted"]
     );
 }

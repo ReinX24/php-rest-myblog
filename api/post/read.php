@@ -31,7 +31,7 @@ if ($num > 0) {
     while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
         extract($row); // converts key and value into a variable and value
 
-        $post_item = [
+        $cat_item = [
             "id" => $id,
             "title" => $title,
             "body" => html_entity_decode($body),
@@ -41,7 +41,7 @@ if ($num > 0) {
         ];
 
         // Push to "data" key
-        array_push($posts_arr["data"], $post_item);
+        array_push($posts_arr["data"], $cat_item);
     }
 
     // Turn to JSON & output

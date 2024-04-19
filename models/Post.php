@@ -59,14 +59,14 @@ class Post
       p.created_at
     FROM {$this->table} p
     LEFT JOIN categories c ON p.category_id = c.id
-    WHERE p.id = ?
+    WHERE p.id = :id
     LIMIT 0,1";
 
     $stmt = $this->conn->prepare($query);
 
     // Bind ID
     // Binds first parameter 
-    $stmt->bindParam(1, $this->id);
+    $stmt->bindParam(":id", $this->id);
 
     // Execute query
     $stmt->execute();
@@ -91,7 +91,7 @@ class Post
       title = :title,
       body = :body,
       author = :author,
-      category_id = :category_id,";
+      category_id = :category_id";
 
     // Prepare statement
     $stmt = $this->conn->prepare($query);
@@ -109,6 +109,74 @@ class Post
     $stmt->bindParam(":body", $this->body);
     $stmt->bindParam(":author", $this->author);
     $stmt->bindParam(":category_id", $this->category_id);
+
+    // Execute query
+    if ($stmt->execute()) {
+      return true;
+    } else {
+      // Print error
+      printf("Error: %s.\n", $stmt->error);
+      return false;
+    }
+  }
+
+  // Update post
+  public function update()
+  {
+    // Create query
+    $query = "UPDATE
+      {$this->table} 
+    SET 
+      title = :title,
+      body = :body,
+      author = :author,
+      category_id = :category_id
+    WHERE
+      id = :id";
+
+    // Prepare statement
+    $stmt = $this->conn->prepare($query);
+
+    // Clean data
+    // htmlspecialchars: converts special html characters into HTML entities
+    // strip_tags: removes html tags in a string
+    $this->title = htmlspecialchars(strip_tags($this->title));
+    $this->body = htmlspecialchars(strip_tags($this->body));
+    $this->author = htmlspecialchars(strip_tags($this->author));
+    $this->category_id = htmlspecialchars(strip_tags($this->category_id));
+    $this->id = htmlspecialchars(strip_tags($this->id));
+
+    // Bind the data
+    $stmt->bindParam(":title", $this->title);
+    $stmt->bindParam(":body", $this->body);
+    $stmt->bindParam(":author", $this->author);
+    $stmt->bindParam(":category_id", $this->category_id);
+    $stmt->bindParam(":id", $this->id);
+
+    // Execute query
+    if ($stmt->execute()) {
+      return true;
+    } else {
+      // Print error
+      printf("Error: %s.\n", $stmt->error);
+      return false;
+    }
+  }
+
+  // Delete Post
+  public function delete()
+  {
+    // Create query
+    $query = "DELETE FROM {$this->table} WHERE id = :id";
+
+    // Prepare statement
+    $stmt = $this->conn->prepare($query);
+
+    // Clean data
+    $this->id = htmlspecialchars(strip_tags($this->id));
+
+    // Bind data
+    $stmt->bindParam(":id", $this->id);
 
     // Execute query
     if ($stmt->execute()) {
