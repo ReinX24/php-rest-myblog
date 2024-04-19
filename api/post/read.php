@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 // Headers
-// header("Access-Control-Allow-Origin: *"); // api can be accessed by anyone
-// header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *"); // api can be accessed by anyone
+header("Content-Type: application/json");
 
 include_once "../../config/Database.php";
 include_once "../../models/Post.php";
@@ -45,10 +45,8 @@ if ($num > 0) {
     }
 
     // Turn to JSON & output
-    echo "test";
-    // echo json_encode($posts_arr);
+    echo json_encode($posts_arr);
 } else {
     // No posts
-    echo "not pog";
-    // echo json_encode(["message" => "No Posts Found"]);
+    echo json_encode(["message" => "No Posts Found"]);
 }
